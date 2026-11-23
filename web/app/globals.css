@@ -1,0 +1,14 @@
+@import "tailwindcss";
+@import "@ai-agents/ui/tokens.css";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+@source "../../packages/ui/src";
+@source "../components";
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+}
