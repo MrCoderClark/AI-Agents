@@ -15,10 +15,10 @@ export default function HomePage() {
         </a>
       </header>
       <section className="flex flex-col gap-4 rounded-lg border border-border bg-surface p-6 shadow-e1">
-        <h2 className="text-lg font-semibold text-foreground">Workspace</h2>
-        <p className="font-mono text-xs text-muted-foreground tabular-nums">
-          agent_01 · 24 runs
-        </p>
+        <h2 className="text-lg font-semibold text-foreground">Workspaces</h2>
+        <a className="text-sm text-primary" href="/workspaces">
+          Open workspaces
+        </a>
       </section>
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold text-foreground">Run status</h2>

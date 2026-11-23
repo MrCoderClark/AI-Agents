@@ -3,10 +3,13 @@ name = "agents-api"
 version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
+  "alembic>=1.14",
+  "asyncpg>=0.30",
   "cryptography>=44",
   "fastapi>=0.115",
   "pydantic>=2.10",
   "pyjwt>=2.10",
+  "sqlalchemy[asyncio]>=2.0.36",
   "uvicorn>=0.34",
 ]
 
