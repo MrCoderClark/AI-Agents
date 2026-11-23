@@ -16,6 +16,9 @@ export default async function AccountPage() {
       <h1 className="text-3xl font-bold text-foreground">Account</h1>
       <p className="text-base text-foreground">{session.user.email}</p>
       <p className="font-mono text-xs text-muted-foreground">{session.user.id}</p>
+      <a className="text-sm text-primary" href="/workspaces">
+        Workspaces
+      </a>
     </main>
   );
 }
