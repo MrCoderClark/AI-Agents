@@ -38,6 +38,21 @@ export async function createAgent(
   return { ok: true, agent: (await response.json()) as Agent };
 }
 
+export async function getAgent(
+  token: string,
+  workspaceId: string,
+  agentId: string,
+): Promise<Agent | null> {
+  const response = await apiFetch(token, `/workspaces/${workspaceId}/agents/${agentId}`);
+  if (response.status === 404) {
+    return null;
+  }
+  if (!response.ok) {
+    throw new Error(await readError(response, "Could not load the agent"));
+  }
+  return (await response.json()) as Agent;
+}
+
 export async function deleteAgent(
   token: string,
   workspaceId: string,
@@ -54,7 +69,10 @@ export async function deleteAgent(
   return { ok: true };
 }
 
-async function readError(response: Response): Promise<string> {
+async function readError(
+  response: Response,
+  fallback = "Could not save the agent",
+): Promise<string> {
   const body: unknown = await response.json().catch(() => null);
   if (typeof body === "object" && body !== null && "detail" in body) {
     const detail = body.detail;
@@ -65,5 +83,5 @@ async function readError(response: Response): Promise<string> {
   if (response.status === 422) {
     return "Name is required";
   }
-  return "Could not save the agent";
+  return fallback;
 }
