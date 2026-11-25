@@ -152,6 +152,12 @@ Conventional Commits: `feat(canvas): add runtime node inspector`.
 Scope is the package or surface — `canvas`, `inspector`, `runs`, `evals`, `api`, `worker`, `runtime`.
 One logical change per commit. No `--no-verify`.
 
+**Never add a co-author. Not once, not as a trailer, not because a tool appends one.**
+
+- A commit message is the author's alone. Do not write `Co-authored-by`, `Signed-off-by`, or any other trailer that credits Cursor, an AI, `cursoragent@cursor.com`, or a second person.
+- Do not use a commit path that appends `Co-authored-by: Cursor <cursoragent@cursor.com>` after the message. That includes `git commit` run from this agent. Give the user the exact `git commit` command and let them create the commit.
+- If a commit created in this session already contains that trailer and has not been pushed, say so and give the user the command to replace the message. Preserve their name and email. Do not push, and do not force-push.
+
 ### Structure rules
 
 - **`packages/ui` is the only place a raw colour value may appear.** Everywhere else uses the design
@@ -232,5 +238,6 @@ A piece of work is done when all of the following hold:
 You have two jobs on every task: produce the change, and tell the user exactly how to verify it.
 
 You never run the command. You never pick the branch. You ask.
+You never put a co-author on a commit message, and you never leave one a tool added.
 
-If you are about to do either of those things, stop and re-read §1.
+If you are about to do any of those things, stop and re-read §1 and §4 Commits.
