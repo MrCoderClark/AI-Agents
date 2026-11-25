@@ -19,6 +19,9 @@ export default function HomePage() {
         <a className="text-sm text-primary" href="/workspaces">
           Open workspaces
         </a>
+        <a className="text-sm text-primary" href="/agents">
+          Open agents
+        </a>
       </section>
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold text-foreground">Run status</h2>
