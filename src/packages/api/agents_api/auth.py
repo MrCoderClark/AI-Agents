@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from typing import Protocol
+from urllib.parse import urlsplit, urlunsplit
 
 import jwt
 from fastapi import Depends, HTTPException
@@ -71,11 +72,25 @@ class SigningKeyVerifier:
         )
 
 
+def jwks_fetch_url(url: str) -> str:
+    parts = urlsplit(url)
+    if parts.hostname != "localhost":
+        return url
+    host = "127.0.0.1" if parts.port is None else f"127.0.0.1:{parts.port}"
+    return urlunsplit((parts.scheme, host, parts.path, parts.query, parts.fragment))
+
+
 class JwksTokenVerifier:
     def __init__(self, url: str, *, issuer: str, audience: str) -> None:
-        self._jwks = PyJWKClient(url, cache_keys=True)
+        self._jwks = PyJWKClient(jwks_fetch_url(url), cache_keys=True, timeout=5)
         self._issuer = issuer
         self._audience = audience
+
+    def warm(self) -> None:
+        try:
+            self._jwks.fetch_data()
+        except Exception:
+            return
 
     def verify(self, token: str) -> AccessToken:
         try:
@@ -90,14 +105,21 @@ class JwksTokenVerifier:
             raise InvalidAccessToken from exc
 
 
+_verifier: TokenVerifier | None = None
+
+
 def get_verifier() -> TokenVerifier:
+    global _verifier
+    if _verifier is not None:
+        return _verifier
     try:
         url = os.environ["AUTH_JWKS_URL"]
         issuer = os.environ["AUTH_ISSUER"]
         audience = os.environ["AUTH_AUDIENCE"]
     except KeyError as exc:
         raise HTTPException(status_code=500, detail="Auth is not configured") from exc
-    return JwksTokenVerifier(url, issuer=issuer, audience=audience)
+    _verifier = JwksTokenVerifier(url, issuer=issuer, audience=audience)
+    return _verifier
 
 
 def require_access_token(

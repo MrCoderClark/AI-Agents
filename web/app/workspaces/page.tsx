@@ -44,6 +44,9 @@ export default async function WorkspacesPage({ searchParams }: WorkspacesPagePro
         <a className="text-sm text-primary" href="/account">
           Account
         </a>
+        <a className="text-sm text-primary" href="/agents">
+          Agents
+        </a>
       </header>
       <section className="flex flex-col gap-4 rounded-lg border border-border bg-surface p-6 shadow-e1">
         <h2 className="text-lg font-semibold text-foreground">New workspace</h2>

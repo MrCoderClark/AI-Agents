@@ -21,7 +21,7 @@ export async function accessToken(): Promise<string | null> {
 }
 
 export async function listWorkspaces(token: string): Promise<Workspace[]> {
-  const response = await callApi(token, "/workspaces");
+  const response = await apiFetch(token, "/workspaces");
   if (!response.ok) {
     throw new Error("Could not load workspaces");
   }
@@ -32,12 +32,12 @@ export async function getWorkspace(
   token: string,
   workspaceId: string,
 ): Promise<Workspace | null> {
-  const response = await callApi(token, `/workspaces/${workspaceId}`);
+  const response = await apiFetch(token, `/workspaces/${workspaceId}`);
   if (response.status === 404) {
     return null;
   }
   if (!response.ok) {
-    throw new Error("Could not load the workspace");
+    throw new Error(await readError(response, "Could not load the workspace"));
   }
   return (await response.json()) as Workspace;
 }
@@ -47,7 +47,7 @@ type CreateResult =
   | { ok: false; status: number; message: string };
 
 export async function createWorkspace(token: string, name: string): Promise<CreateResult> {
-  const response = await callApi(token, "/workspaces", {
+  const response = await apiFetch(token, "/workspaces", {
     method: "POST",
     body: JSON.stringify({ name }),
   });
@@ -55,13 +55,17 @@ export async function createWorkspace(token: string, name: string): Promise<Crea
     return {
       ok: false,
       status: response.status,
-      message: await readError(response),
+      message: await readError(response, "Could not save the workspace"),
     };
   }
   return { ok: true, workspace: (await response.json()) as Workspace };
 }
 
-async function callApi(token: string, path: string, init?: RequestInit): Promise<Response> {
+export async function apiFetch(
+  token: string,
+  path: string,
+  init?: RequestInit,
+): Promise<Response> {
   const base = process.env.API_URL ?? "http://127.0.0.1:8000";
   try {
     return await fetch(new URL(path, base), {
@@ -77,7 +81,7 @@ async function callApi(token: string, path: string, init?: RequestInit): Promise
   }
 }
 
-async function readError(response: Response): Promise<string> {
+async function readError(response: Response, fallback: string): Promise<string> {
   const body: unknown = await response.json().catch(() => null);
   if (typeof body === "object" && body !== null && "detail" in body) {
     const detail = body.detail;
@@ -88,5 +92,5 @@ async function readError(response: Response): Promise<string> {
   if (response.status === 422) {
     return "Name is required";
   }
-  return "Could not save the workspace";
+  return fallback;
 }

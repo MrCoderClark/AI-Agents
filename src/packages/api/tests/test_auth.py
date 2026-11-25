@@ -12,6 +12,7 @@ from agents_api.auth import (
     SigningKeyVerifier,
     decode_access_token,
     get_verifier,
+    jwks_fetch_url,
 )
 from agents_api.main import app
 
@@ -54,6 +55,15 @@ def _token(
     )
     assert isinstance(encoded, str)
     return encoded
+
+
+def test_jwks_fetch_url_uses_ipv4_for_localhost() -> None:
+    assert (
+        jwks_fetch_url("http://localhost:3000/api/auth/jwks")
+        == "http://127.0.0.1:3000/api/auth/jwks"
+    )
+    unchanged = "http://127.0.0.1:3000/api/auth/jwks"
+    assert jwks_fetch_url(unchanged) == unchanged
 
 
 def test_decode_access_token() -> None:

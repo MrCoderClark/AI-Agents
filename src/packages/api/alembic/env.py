@@ -7,11 +7,11 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from agents_api.db import Base, database_url
-from agents_api.models import AuditLogRow, WorkspaceMemberRow, WorkspaceRow
+from agents_api.models import AgentRow, AuditLogRow, WorkspaceMemberRow, WorkspaceRow
 from alembic import context
 
 target_metadata = Base.metadata
-_ = (AuditLogRow, WorkspaceMemberRow, WorkspaceRow)
+_ = (AgentRow, AuditLogRow, WorkspaceMemberRow, WorkspaceRow)
 
 
 def run_migrations_offline() -> None:
