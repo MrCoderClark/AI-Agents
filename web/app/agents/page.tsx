@@ -124,7 +124,9 @@ function AgentRow({ agent }: { agent: Agent }) {
   return (
     <li className="flex items-center justify-between gap-4 rounded-lg border border-border bg-surface px-4 py-3">
       <div className="flex flex-col gap-1">
-        <p className="text-sm font-medium text-foreground">{agent.name}</p>
+        <a className="text-sm font-medium text-foreground hover:text-primary" href={`/agents/${agent.id}`}>
+          {agent.name}
+        </a>
         {agent.description ? (
           <p className="text-sm text-muted-foreground">{agent.description}</p>
         ) : null}
